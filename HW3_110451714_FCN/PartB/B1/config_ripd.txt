@@ -1,0 +1,38 @@
+#Enable zebra=yes and ripd=yes in /etc/quagga/daemons file
+	#cp /usr/share/doc/quagga/examples/zebra.conf.sample /etc/quagga/zebra.conf
+	#cp /usr/share/doc/quagga/examples/ripd.conf.sample /etc/quagga/ripd.conf
+
+	Now, copy conf files from /etc/quagga/*.conf to /myfolder/configs/X
+	X would be every node H1, H2, R1, R2, R3, R4
+	This would enable the zebra and ripd capabilities.
+	
+	restart the quagga service: /etc/init.d/quagga restart
+		root@wings-GB-BXBT-2807:/home/wings/Alpit/fcn/myfolder/configs/R4# /etc/init.d/quagga restart
+		Stopping Quagga monitor daemon: (waiting) .. watchquagga.
+		Stopping Quagga daemons (prio:0): (waiting) .. ripd zebra (bgpd) (ripngd) (ospfd) (ospf6d) (isisd) (babeld).
+		Removing all routes made by zebra.
+		Loading capability module if not yet done.
+		Starting Quagga daemons (prio:10): zebra ripd.
+		Starting Quagga monitor daemon: watchquagga.
+
+	#Enabling IP forwarding variable to 1
+		H1 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R1 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R2 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R3 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R4 echo 1 > /proc/sys/net/ipv4/ip_forward
+		H2 echo 1 > /proc/sys/net/ipv4/ip_forward
+
+	Now to configure every router/host with Quagga ripd daemons, i followed the below configurations
+	
+	login to any router/host
+		cd /miniNExT/util
+		./mx R1-> launch any host/router
+		netstat -na-> find the port of running ripd
+		telnet localhost 2602-> remote access for localhost/ripd process
+		en-> enable
+		configure terminal-> to configure the ripd terminal
+		router rip-> Enables RIP as a routing protocol
+		network X.X.X.X/24-> X.X.X.X is the network number of the directly connected network you want to advertise.
+		write-> save the config
+		exit-> come out of the terminal

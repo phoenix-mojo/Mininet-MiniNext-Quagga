@@ -1,0 +1,13 @@
+	mininext> H1 traceroute H2
+	traceroute to 177.0.0.2 (177.0.0.2), 30 hops max, 60 byte packets
+	 1  172.0.0.2 (172.0.0.2)  0.082 ms  0.031 ms  0.030 ms
+	 2  175.0.0.1 (175.0.0.1)  0.088 ms  0.043 ms  0.036 ms
+	 3  * * *
+	 4  177.0.0.2 (177.0.0.2)  0.109 ms  0.088 ms  0.086 ms
+	
+	mininext> H2 traceroute H1
+	traceroute to 172.0.0.1 (172.0.0.1), 30 hops max, 60 byte packets
+	 1  177.0.0.1 (177.0.0.1)  0.222 ms  0.137 ms  0.134 ms
+	 2  176.0.0.1 (176.0.0.1)  0.384 ms  0.236 ms  0.225 ms
+	 3  * * *
+	 4  172.0.0.1 (172.0.0.1)  0.407 ms  0.384 ms  0.378 ms

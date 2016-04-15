@@ -1,0 +1,66 @@
+#Enabling IP forwarding variable to 1
+		H1 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R1 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R2 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R3 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R4 echo 1 > /proc/sys/net/ipv4/ip_forward
+		H2 echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+	Adding static routes:
+
+	H1 ip route add 177.0.0.0/24 via 172.0.0.2 dev H1-eth0
+	H1 ip route add 174.0.0.0/24 via 172.0.0.2 dev H1-eth0
+	R1 ip route add 177.0.0.0/24 via 173.0.0.2 dev R1-eth1
+	R1 ip route add 177.0.0.0/24 via 174.0.0.2 dev R1-eth2
+	R2 ip route add 177.0.0.0/24 via 175.0.0.2 dev R2-eth1
+	R2 ip route add 172.0.0.0/24 via 173.0.0.1 dev R2-eth0
+	R3 ip route add 177.0.0.0/24 via 176.0.0.2 dev R3-eth1
+	R3 ip route add 172.0.0.0/24 via 174.0.0.1 dev R3-eth0
+	R4 ip route add 177.0.0.0/24 via 177.0.0.2 dev R4-eth0
+	R4 ip route add 172.0.0.0/24 via 176.0.0.1 dev R4-eth2
+	H2 ip route add 172.0.0.0/24 via 177.0.0.2 dev H2-eth0
+	H2 ip route add 175.0.0.0/24 via 177.0.0.2 dev H2-eth0
+	H2 ip route add 176.0.0.0/24 via 177.0.0.2 dev H2-eth0
+
+	FORWARD RELAYING: H1 to H2
+	R1 iptables -t nat -A POSTROUTING -o R1-eth0 -j MASQUERADE
+	R1 iptables -A FORWARD -i R1-eth0 -o R1-eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+	R1 iptables -A FORWARD -i R1-eth0 -o R1-eth1 -j ACCEPT
+
+	R2 iptables -t nat -A POSTROUTING -o R2-eth1 -j MASQUERADE
+	R2 iptables -A FORWARD -i R2-eth0 -o R2-eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+	R2 iptables -A FORWARD -i R2-eth0 -o R2-eth1 -j ACCEPT
+
+	R4 iptables -t nat -A POSTROUTING -o R4-eth1 -j MASQUERADE
+	R4 iptables -A FORWARD -i R4-eth1 -o R4-eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+	R4 iptables -A FORWARD -i R4-eth1 -o R4-eth0 -j ACCEPT
+
+
+	REVERSE REALYING:- H2 to H1
+
+	R4 iptables -A FORWARD -i R4-eth0 -o R4-eth2 -j ACCEPT
+	R4 iptables -A FORWARD -i R4-eth0 -o R4-eth2 -m state --state RELATED,ESTABLISHED -j ACCEPT
+	R4 iptables -t nat -A POSTROUTING -o R4-eth2 -j MASQUERADE
+
+	R3 iptables -A FORWARD -i R3-eth1 -o R3-eth0 -j ACCEPT
+	R3 iptables -A FORWARD -i R3-eth1 -o R3-eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+	R3 iptables -t nat -A POSTROUTING -o R3-eth0 -j MASQUERADE
+
+
+Please find the routing table screenshot for every node in the folder:  C:\Users\waytoalpit\Desktop\HW3_110451714_FCN\PartA\A2
+To establish static routes, i have route every source to destination via another HOP.
+
+For example: 
+	H1 ip route add 177.0.0.0/24 via 172.0.0.2 dev H1-eth0
+	H1 will send data packets to subnet 177.0.0.0/24 via HOP 172.0.0.2
+
+Also, i have enabled IP forwarding for each node to 1.
+
+	#Enabling IP forwarding variable to 1
+		H1 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R1 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R2 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R3 echo 1 > /proc/sys/net/ipv4/ip_forward
+		R4 echo 1 > /proc/sys/net/ipv4/ip_forward
+		H2 echo 1 > /proc/sys/net/ipv4/ip_forward
